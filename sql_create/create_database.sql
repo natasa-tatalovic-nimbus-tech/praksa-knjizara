@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS knjizara;
+CREATE DATABASE knjizara;
