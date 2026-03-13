@@ -1,0 +1,30 @@
+services:
+# container 1 - database that we have to run 
+
+#database is the name of service
+  database:
+  # port we want on our machine: port we want to retrieve in the container 
+    image: "postgres:15"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - .env 
+    # volumes:
+    #   - .:/app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+# the name of ETL that should be runned 
+  etl:
+  # this is creating his own image, not like above where it is used already existed image, here is the new image created for etl
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      database:
+        condition: service_healthy
+      
+volumes:
+  postgres_data:

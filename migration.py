@@ -1,8 +1,28 @@
+# This is ETL script that is used to read transform and write data to databse.
+# Dockerfile should start this ETL script that I have
+# Docker compose file should start postgres database and after it all scripts - creating database, shemaa and tables
+
 # import csv, date, os, psycopg2
 import csv
-from datetime import date
 import os
-import psycopg2 # open source database adapter for Python 
+from datetime import date
+
+import psycopg2  # open source database adapter for Python
+
+def run_migrations(cursor):
+    
+    migrations = [f for f in os.listdir('sql_migrations/') if f.endswith('.sql')]
+    # migrations = migrations.sort() # nema dodele rezultata
+    migrations.sort()
+    print(migrations)
+
+    for file in migrations:
+        print("izvrsavanje migacije")
+        with open (os.path.join('sql_migrations', file), 'r') as f: 
+            sql=f.read()    # read fie
+        cursor.execute(sql) # execute sql order
+        print("zavrsena migracija")
+
 
 def main():
 
@@ -12,10 +32,10 @@ def main():
     # seed.py has already created the knjizaraa database
     conn = psycopg2.connect(
      dbname = "knjizara", 
-     user = os.environ.get("USER"), 
-     password = "", 
-     host = "localhost",
-     port = "5432"
+     user = os.environ.get("DB_USER"), 
+     password=os.environ.get("DB_PASSWORD"), # Cha
+     host=os.environ.get("DB_HOST"),    # Change1
+     port = os.environ.get("DB_PORT")
 )
     conn.autocommit = True
     cur = conn.cursor()
@@ -24,6 +44,9 @@ def main():
     # List to store data
     godine = []
     knjige = []
+
+    # migration script call
+    run_migrations(cur)
 
     with open('knjige.csv', mode='r') as file: 
         csvFile = csv.DictReader(file)
@@ -43,7 +66,7 @@ def main():
 
     for knjiga in knjige: # rows from CSV list : knjige
         cur.execute("INSERT INTO knjige (autor_id, naslov, cena, godina) VALUES (%s, %s, %s, %s)", (knjiga['autor_id'], knjiga['naslov'], knjiga['cena'], knjiga['godina']))
-        print("Data is insert to database")
+        print("Data is inserted to database")
         
     # select all booksk from database    
     cur.execute("SELECT id, godina FROM knjige ")
@@ -57,9 +80,10 @@ def main():
 
 
     for i, red in enumerate(svi_redovi): 
-        id = red[0]
+        # id is inbuilt function in python
+        idd = red[0]
         starost=godine[i]
-        cur.execute("UPDATE knjige SET starost_knjige = %s WHERE id = %s", (starost, id))
+        cur.execute("UPDATE knjige SET starost_knjige = %s WHERE id = %s", (starost, idd))
 
     # prolaz 1
     # i = 0
