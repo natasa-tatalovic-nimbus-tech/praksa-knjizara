@@ -3,5 +3,4 @@ INSERT INTO autori(ime, prezime, drzava) VALUES
 ('Milos', 'Crnjanski', 'Srbija'), 
 ('Desanka', 'Maksimovic', 'Srbija'),
 ('Mesa','Selimovic', 'BiH'),
-('Branislav', 'Nusic', 'Srbija')
-;
+('Branislav', 'Nusic', 'Srbija');
