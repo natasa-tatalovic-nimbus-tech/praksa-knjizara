@@ -11,10 +11,10 @@ def run_sql(cursor, filepath):
     print(f"--- Starting --- {filepath}")
     with open(filepath, "r") as f:
         sql = f.read()
-        
+
     commands = []
     for cmd in sql.split(";"):
-        cmd=cmd.strip()
+        cmd = cmd.strip()
         if cmd:
             commands.append(cmd)
     # cursor.execute(sql)
@@ -31,17 +31,17 @@ def main():
     # Create database #
     print("--- Creating database ---")  # Connnection to postgres
     conn = psycopg2.connect(
-     dbname = "postgres", 
-     user=os.environ.get("DB_USER"),
-     password=os.environ.get("DB_PASSWORD"),
-     host=os.environ.get("DB_HOST"),
-     port=os.environ.get("DB_PORT")
+        dbname="postgres",
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        host=os.environ.get("DB_HOST"),
+        port=os.environ.get("DB_PORT"),
     )
     conn.set_isolation_level(0)
     # Autocommit #
     # conn.autocommit = True
     # # change the behaviour of commit
-    cur = conn.cursor()  # cursor ready for commands 
+    cur = conn.cursor()  # cursor ready for commands
     # Check if there is there a database before creation of it
     # cur.execute(
     #     "SELECT 1 FROM pg_database WHERE datname ='knjizara'"
@@ -67,7 +67,7 @@ def main():
         user=os.environ.get("DB_USER"),
         password=os.environ.get("DB_PASSWORD"),
         host=os.environ.get("DB_HOST"),
-        port=os.environ.get("DB_PORT")
+        port=os.environ.get("DB_PORT"),
     )
     conn.autocommit = True
     cur = conn.cursor()
